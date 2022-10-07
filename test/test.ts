@@ -1,7 +1,8 @@
-import { expect } from "chai";
+import {describe, expect, test} from '@jest/globals';
+
 
 describe("something", () => {
-  it("does something", () => {
-    expect(true).is.true;
+  test("does something", () => {
+    expect(true).toBe(true);
   });
 });
