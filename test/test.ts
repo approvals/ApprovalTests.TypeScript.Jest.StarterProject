@@ -1,5 +1,6 @@
 import {describe, expect, test} from '@jest/globals';
 import path from "path";
+import {configure} from 'approvals'
 const approvalsConfig = {
   reporters: ['beyondcompare', 'kdiff3', 'vscode'],
 
@@ -17,7 +18,7 @@ const approvalsConfig = {
 
   forceApproveAll: false
 }
-const approvals = require('approvals').configure(approvalsConfig);
+const approvals = configure(approvalsConfig);
 
 const basePath = path.join(process.cwd(), 'test/');
 
@@ -31,4 +32,8 @@ describe("something", () => {
   verify("does something", () => {
     return {name:"fred", age: 30}
   });
+
+  // test("approvals.verify", () => {
+  //   approvals.verifyAsJson({name:"fred", age: 30})
+  // });
 });
