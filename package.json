@@ -4,8 +4,8 @@
   "description": "A basic typescript project template, e.g. for code retreats",
   "main": "index.js",
   "scripts": {
-    "test": "",
-    "watch": "-w",
+    "test": "jest",
+    "watch": "jest --watch",
     "checkstyle": "prettier --check .",
     "pretty": "prettier --write ."
   },
