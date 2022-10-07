@@ -1,0 +1,26 @@
+{
+  "name": "typescript-template",
+  "version": "1.0.0",
+  "description": "A basic typescript project template, e.g. for code retreats",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "watch": "mocha -w",
+    "checkstyle": "prettier --check .",
+    "pretty": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.2.18",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^15.12.2",
+    "chai": "^4.3.4",
+    "mocha": "^9.0.0",
+    "nyc": "^15.1.0",
+    "prettier": "2.3.1",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.2"
+  }
+}
