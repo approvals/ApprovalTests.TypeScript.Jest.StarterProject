@@ -10,6 +10,7 @@ This is a minimal template project for TypeScript development, e.g. for use in a
 4. Edit `test/test.ts`.
 
 ## Default Tools
+
 - [Mocha](https://mochajs.org/) is used as the test running.
 - [Chai](https://www.chaijs.com/) is used for assertions.
 - [Prettier](https://prettier.io/) is available to standardize code style.

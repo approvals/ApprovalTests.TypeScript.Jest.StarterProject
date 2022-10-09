@@ -1,39 +1,23 @@
-import {describe, expect, test} from '@jest/globals';
+import { describe, expect, test } from "@jest/globals";
 import path from "path";
-import {configure} from 'approvals'
-const approvalsConfig = {
-  reporters: ['beyondcompare', 'kdiff3', 'vscode'],
+import { getConfig,  verifyWithControl } from "approvals";
+import StringWriter from "approvals/lib/StringWriter"
+import Namer from "approvals/lib/Namer"
 
-  normalizeLineEndingsTo: '\n',
-
-  appendEOL: true,
-
-  EOL: "\n",
-
-  errorOnStaleApprovedFiles: true,
-
-  shouldIgnoreStaleApprovedFile: function (/*fileName*/) { return false; },
-
-  stripBOM: true,
-
-  forceApproveAll: false
+function verify(sut: string) {
+  const state = expect.getState();
+  const config = getConfig();
+  config.reporters = ["diffmerge"];
+  const writer = new StringWriter(config, sut, ".txt");
+  const testPath = path.dirname(state.testPath as string);
+  const namer = new Namer(testPath, state.currentTestName);
+  verifyWithControl(namer, writer, null, config);
 }
-const approvals = configure(approvalsConfig);
 
-const basePath = path.join(process.cwd(), 'test/');
-
-function verify(name:string, situationUnderTest:()=>any) {
-  test(name, function() {
-    const result = situationUnderTest();
-    approvals.verify(basePath, name, JSON.stringify(result))
-  });
-}
-describe("something", () => {
-  verify("does something", () => {
-    return {name:"fred", age: 30}
-  });
-
-  // test("approvals.verify", () => {
-  //   approvals.verifyAsJson({name:"fred", age: 30})
-  // });
+describe("ApprovalTests", () => {
+   test("SimpleVerify", () => {
+     const data = {name:"fred", age: 30}
+     const sut = JSON.stringify(data, null, "  ");
+     verify(sut);
+   });
 });
