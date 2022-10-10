@@ -3,7 +3,10 @@ import { verify, verifyAsJson } from "./JestApprovals";
 
 describe("ApprovalTests", () => {
    test("SimpleVerify", () => {
-     const data = {name:"fred", age: 30}
-     verifyAsJson(data);
+     verifyAsJson("Hello From Approvals");
    });
+  test("JsonVerify", () => {
+    const data = {name:"fred", age: 30}
+    verifyAsJson(data);
+  });
 });

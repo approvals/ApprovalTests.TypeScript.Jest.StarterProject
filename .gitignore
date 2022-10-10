@@ -1,4 +1,5 @@
 *~
+*.received.*
 node_modules
 .log
 .nyc_output
