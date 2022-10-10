@@ -4,7 +4,7 @@ import { Options } from "./Options";
 import { getJestNamer } from "./JestNamer";
 
 
-export function verify(sut: string, options?: Options) {
+export function verify(sut: string, options?: Options): void {
   const config = getConfig();
   config.reporters = ["diffmerge"];
   options = options || new Options()
@@ -12,7 +12,7 @@ export function verify(sut: string, options?: Options) {
   verifyWithControl(getJestNamer(), writer, null, config);
 }
 
-export function verifyAsJson(data: any, options?: Options){
+export function verifyAsJson(data: any, options?: Options): void {
   const text = JSON.stringify(data, null, "  ");
   options = options || new Options()
   options = options.forFile().withFileExtention(".json")

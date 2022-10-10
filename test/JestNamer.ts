@@ -2,7 +2,7 @@ import { expect } from "@jest/globals";
 import path from "path";
 import Namer from "approvals/lib/Namer";
 
-function convertToFilename(name: string) {
+export function convertToFilename(name: string):string {
   const forbidden = "\\/:?\"<>|' ";
   for (let forbiddenKey of forbidden) {
     if (name.includes(forbiddenKey)) {
@@ -12,7 +12,7 @@ function convertToFilename(name: string) {
   return name;
 }
 
-export function getJestNamer() {
+export function getJestNamer(): Namer{
   const state = expect.getState();
   const file = path.parse(state.testPath as string);
   const testPath = file.dir;

@@ -4,12 +4,12 @@ class FileOptions {
     this.options = options;
   }
 
-  withFileExtention(extensionWithDot: string) {
+  withFileExtention(extensionWithDot: string) : Options{
     return  this.options.modify("FileExtention", extensionWithDot);
 
   }
 
-  getFileExtension() {
+  getFileExtension() : string {
     return this.options.get("FileExtention", () => ".txt")
   }
 }
@@ -20,7 +20,7 @@ export class Options{
     this.fields = {}
  }
 
-  modify(key: string, value: any) {
+  modify(key: string, value: any): Options {
     const next = new Options();
     for (const key1 in next.fields) {
       next.fields[key1] = this.fields[key1]
@@ -28,11 +28,11 @@ export class Options{
     next.fields[key] = value;
     return next;
   }
-  forFile() {
+  forFile(): FileOptions {
     return new FileOptions(this);
   }
 
-  get(key: string, default1: () => any) {
+  get<Type>(key: string, default1: () => Type):Type {
     if (this.fields[key] == undefined){
       return default1();
     }
