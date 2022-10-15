@@ -4,11 +4,11 @@ import { Options } from "./Options";
 import { getJestNamer } from "./JestNamer";
 
 
-export function verify(sut: string, options?: Options): void {
+export function verify(sut: any, options?: Options): void {
   const config = getConfig();
   config.reporters = ["diffmerge"];
   options = options || new Options()
-  const writer = new StringWriter(config, sut, options.forFile().getFileExtension());
+  const writer = new StringWriter(config,  `${sut}`, options.forFile().getFileExtension());
   verifyWithControl(getJestNamer(), writer, null, config);
 }
 
