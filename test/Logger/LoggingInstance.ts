@@ -1,8 +1,18 @@
 import {StringWrapper} from "./StringWrapper";
-import {isArray} from "util";
 
 function printType(value) {
     return `<${value.constructor.name}>`;
+}
+
+function getCallingMethod(additional_stack: number) {
+    const re = /at ([^(]+) \(/g;
+    const stack = `${new Error().stack}`;
+    const lines = stack.split("\n");
+    const stackDepth = 2 + additional_stack;
+    const line = lines[stackDepth]
+    const aRegexResult = re.exec(line) ?? [];
+    const name = aRegexResult[1] || aRegexResult[2];
+    return name;
 }
 
 export class LoggingInstance {
@@ -17,30 +27,22 @@ export class LoggingInstance {
     log_to_string(): StringWrapper {
 
         const stringWrapper = new StringWrapper();
-        // self.log_with_timestamps = False
-        // self.log_stack_traces = False
+        // this.log_with_timestamps = False
+        // this.log_stack_traces = False
         this.logger = (t) => stringWrapper.append(t)
         return stringWrapper;
     }
 
     use_markers(additional_stack: number = 0, code: () => void) {
-        const re = /at ([^(]+) \(/g;
-        const stack = `${new Error().stack}`;
-        const lines = stack.split("\n");
-        const line = lines[3]
-        const test = "    at logVariables (/Users/llewellynfalco/Github/ApprovalTests.TypeScript.Jest.StarterProject/test/Logger/test.ts:6:18)"
-        const aRegexResult = re.exec(line)?? [];
-        const name = aRegexResult[1] || aRegexResult[2];
+        const name = getCallingMethod(additional_stack + 1);
 
         this.log_line(`=> ${name}`)
-        this.tabs += 1;
-        code();
-        this.tabs -= 1;
+        this.withTabbing(code)
         this.log_line(`<= ${name}`)
     }
 
     variable(name: string, value: any, showTypes: boolean) {
-        // if not self.toggles.variables:
+        // if not this.toggles.variables:
         // return
         let toType = (v, s = "") => ''
         if (showTypes) {
@@ -49,11 +51,14 @@ export class LoggingInstance {
 
         if (Array.isArray(value)) {
             this.log_line(`variable: ${name}${toType(value, '')}.length = ${value.length}`)
-            this.tabs += 1;
-            value.forEach((v, i) => {
-                this.logger(`${this.getTabs()}${name}[${i}] = ${v}${toType(v)}\n`);
+            this.withTabbing(() => {
+                value.forEach((v, i) => {
+                    this.logger(`${this.getTabs()}${name}[${i}] = ${v}${toType(v)}\n`);
+                });
             });
-            this.tabs -= 1;
+        } else {
+            this.log_line(`variable: ${name} = ${value}${toType(value)}`)
+
         }
     }
 
@@ -72,5 +77,34 @@ export class LoggingInstance {
     private getTabs() {
         return "                                                ".substring(0, 2 * this.tabs);
     }
+
+    private withTabbing(code: () => void) {
+
+        this.tabs += 1;
+        code();
+        this.tabs -= 1;
+    }
+
+    hour_glass() {
+        // if not this.toggles.hour_glass:
+        // return
+
+        this.counter += 1;
+        if (this.counter == 1) {
+            this.logger(`${this.getTabs()}.`);
+        } else if (this.counter == 100) {
+            this.logger("10\n")
+            this.counter = 0
+        } else if (this.counter % 10 == 0) {
+            const digit = (this.counter / 10)
+            this.logger(`${digit}`
+            )
+        } else {
+
+            this.logger(".")
+        }
+    }
+
+
 }
  

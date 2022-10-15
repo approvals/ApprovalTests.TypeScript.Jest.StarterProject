@@ -31,14 +31,6 @@ export class SimpleLogger {
     }
 /*
 
-    static hour_glass()
-
-->
-    None:
-        SimpleLogger._wrapper.get
-().
-
-    hour_glass()
 
     static event(event_name: str)
 
@@ -134,4 +126,8 @@ export class SimpleLogger {
     show_events(show)
 
  */
+    static hour_glass() {
+        this._wrapper.get().hour_glass();
+
+    }
 }

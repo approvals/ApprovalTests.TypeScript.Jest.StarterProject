@@ -1,4 +1,4 @@
-import { describe, expect, test } from "@jest/globals";
+import {describe, expect, test} from "@jest/globals";
 import {verify, verifyAsJson} from "../JestApprovals";
 import {SimpleLogger} from "./SimpleLogger";
 
@@ -10,6 +10,14 @@ function logVariables() {
     });
 }
 
+function verifySimpleLogger(testName: string, code: () => void) {
+    test(testName, () => {
+        const output = SimpleLogger.log_to_string()
+        code();
+        verify(output)
+    });
+}
+
 describe("SimpleLogger", () => {
     test("variable with list", () => {
         const output = SimpleLogger.log_to_string()
@@ -17,6 +25,26 @@ describe("SimpleLogger", () => {
         verify(output)
     });
 
+    verifySimpleLogger("verify", () => {
+        logVariables();
+    });
+
+    function log_from_inner_method() {
+        SimpleLogger.use_markers(() => {
+
+            const name = "Example"
+            SimpleLogger.variable("name", name)
+            for (let i = 0; i < 142; i++) {
+                SimpleLogger.hour_glass()
+            }
+        });
+
+    }
+
+
+    verifySimpleLogger("test_standard_logger", () => {
+        log_from_inner_method()
+    });
 });
 
 /*
@@ -54,18 +82,7 @@ def test_warnings():
     verify(output, options=Options().with_scrubber(scrubber))
 
 
-def log_from_inner_method():
-    with SimpleLogger.use_markers():
-        name = "Example"
-        SimpleLogger.variable("name", name)
-        for _ in range(0, 142):
-            SimpleLogger.hour_glass()
 
-
-def test_standard_logger():
-    with verify_simple_logger():
-        with SimpleLogger.use_markers() as m:
-            log_from_inner_method()
 
 
 def test_timestamps():
