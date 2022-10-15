@@ -8,6 +8,7 @@ class Toggles {
     public hour_glass: boolean;
     public events: boolean;
     public markers: boolean;
+
     constructor(show: boolean) {
         this.queries = show;
         this.messages = show;
@@ -38,6 +39,8 @@ export class LoggingInstance {
     private counter: number = 0;
     private tabs: number = 0;
     private toggles = new Toggles(true);
+    private log_stack_traces: boolean = true;
+    private log_with_timestamps: boolean = true;
 
     constructor() {
         this.logger = console.log;
@@ -46,14 +49,15 @@ export class LoggingInstance {
     log_to_string(): StringWrapper {
 
         const stringWrapper = new StringWrapper();
-        // this.log_with_timestamps = False
-        // this.log_stack_traces = False
+        this.log_with_timestamps = false;
+        this.log_stack_traces = false;
         this.logger = (t) => stringWrapper.append(t)
         return stringWrapper;
     }
 
     use_markers(additional_stack: number = 0, code: () => void) {
-        if (!this.toggles.markers){
+        if (!this.toggles.markers) {
+            code();
             return;
         }
         const name = getCallingMethod(additional_stack + 1);
@@ -64,7 +68,7 @@ export class LoggingInstance {
     }
 
     variable(name: string, value: any, showTypes: boolean) {
-        if (!this.toggles.variables){
+        if (!this.toggles.variables) {
             return;
         }
 
@@ -86,7 +90,7 @@ export class LoggingInstance {
         }
     }
 
-    private log_line(text: string) {
+    private log_line(text: string, use_timestamps: boolean = true) {
         if (this.counter != 0) {
             this.logger("\n")
         }
@@ -110,7 +114,7 @@ export class LoggingInstance {
     }
 
     hour_glass() {
-        if (!this.toggles.hour_glass){
+        if (!this.toggles.hour_glass) {
             return;
         }
 
@@ -136,7 +140,7 @@ export class LoggingInstance {
     }
 
     event(event_name: string) {
-        if (!this.toggles.events){
+        if (!this.toggles.events) {
             return;
         }
         this.log_line(`event: ${event_name}`)
@@ -145,35 +149,62 @@ export class LoggingInstance {
     show_queries(show) {
         this.toggles.queries = show
     }
+
     show_markers(show) {
         this.toggles.markers = show
     }
+
     show_events(show) {
         this.toggles.events = show
     }
+
     show_messages(show) {
         this.toggles.messages = show
     }
+
     show_variables(show) {
         this.toggles.variables = show
     }
+
     show_hour_glass(show) {
         this.toggles.hour_glass = show
     }
 
-    warning(exception) {
+    warning(exception: Error | string) {
+        const warning_stars = "*".repeat(91);
+        const text = null;
+        this.log_line(warning_stars, false);
+        if (this.log_with_timestamps) {
+            this.log_line("", true)
+        }
+        if (text) {
+            this.log_line(`Message:${text}`, false)
+        }
+        if (exception) {
+            let stack_trace = "";
+            if (this.log_stack_traces) {
+                // format_exception = traceback.format_exception(
+                //     None, exception, exception.__traceback__
+                // )
+                // stack_trace = "".join(format_exception)
 
+            } else {
+                stack_trace = `${exception}`;
+            }
+            this.log_line(stack_trace,  false)
+        }
+        this.log_line(warning_stars,  false)
     }
 
     query(queryText: string) {
-        if (!this.toggles.queries){
+        if (!this.toggles.queries) {
             return;
         }
         this.log_line(`Sql: ${queryText}`)
     }
 
     message(messageText: string) {
-        if (!this.toggles.messages){
+        if (!this.toggles.messages) {
             return;
         }
         this.log_line(`message: ${messageText}`)

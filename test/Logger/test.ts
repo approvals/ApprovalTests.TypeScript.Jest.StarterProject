@@ -83,7 +83,7 @@ describe("SimpleLogger", () => {
 
             }
             try {
-                const infinity = 1 / 0
+                throw new Error("Bad stuff happened here")
             } catch (e) {
                 SimpleLogger.warning(e)
             }
@@ -93,13 +93,13 @@ describe("SimpleLogger", () => {
 
     verifySimpleLogger("switching", () => {
         verify_toggle("None", a => SimpleLogger.show_all(true));
-        // verify_toggle("All", a => SimpleLogger.show_all(a));
-        // verify_toggle("Query", a => SimpleLogger.show_queries(a));
-        // verify_toggle("Message", a => SimpleLogger.show_messages(a));
-        // verify_toggle("Variable", a => SimpleLogger.show_variables(a));
-        // verify_toggle("Hour Glass", a => SimpleLogger.show_hour_glass(a));
-        // verify_toggle("Markers", a => SimpleLogger.show_markers(a));
-        // verify_toggle("Events", a => SimpleLogger.show_events(a));
+        verify_toggle("All", a => SimpleLogger.show_all(a));
+        verify_toggle("Query", a => SimpleLogger.show_queries(a));
+        verify_toggle("Message", a => SimpleLogger.show_messages(a));
+        verify_toggle("Variable", a => SimpleLogger.show_variables(a));
+        verify_toggle("Hour Glass", a => SimpleLogger.show_hour_glass(a));
+        verify_toggle("Markers", a => SimpleLogger.show_markers(a));
+        verify_toggle("Events", a => SimpleLogger.show_events(a));
 
     });
 
