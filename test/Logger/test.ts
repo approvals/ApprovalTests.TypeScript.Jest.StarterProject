@@ -45,24 +45,19 @@ describe("SimpleLogger", () => {
     verifySimpleLogger("test_standard_logger", () => {
         log_from_inner_method()
     });
+
+    // begin-snippet: verify_simple_logger_example
+    verifySimpleLogger("variable", () => {
+        SimpleLogger.variable("dalmatians", 101, true)
+        SimpleLogger.variable("dalmatians", 101, false)
+    });
+    // end-snippet
+
+    
 });
 
 /*
 
-import datetime
-import threading
-
-from contextlib import contextmanager
-
-from approvaltests import (
-    verify,
-    Options,
-    run_all_combinations,
-    verify_logging_for_all_combinations,
-)
-from approval_utilities.utilities.logger.simple_logger import SimpleLogger
-from approvaltests.utilities.logger.simple_logger_approvals import verify_simple_logger
-from approval_utilities.utilities.time_utilities import use_utc_timezone
 
 
 def test_warnings():
@@ -111,14 +106,7 @@ def test_timestamps():
             SimpleLogger.warning(exception=Exception("Oh no you didn't!"))
 
 
-# begin-snippet: verify_simple_logger_example
-def test_variable():
-    with verify_simple_logger():
-        SimpleLogger.variable("dalmatians", 101, show_types=True)
-        SimpleLogger.variable("dalmatians", 101, show_types=False)
 
-
-# end-snippet
 
 # begin-snippet: verify_simple_logger_long_example
 def test_variable_explict():
