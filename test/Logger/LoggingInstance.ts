@@ -1,4 +1,5 @@
 import {StringWrapper} from "./StringWrapper";
+import {isArray} from "util";
 
 function printType(value) {
     return `<${value.constructor.name}>`;
@@ -23,7 +24,19 @@ export class LoggingInstance {
     }
 
     use_markers(additional_stack: number = 0, code: () => void) {
+        const re = /at ([^(]+) \(/g;
+        const stack = `${new Error().stack}`;
+        const lines = stack.split("\n");
+        const line = lines[3]
+        const test = "    at logVariables (/Users/llewellynfalco/Github/ApprovalTests.TypeScript.Jest.StarterProject/test/Logger/test.ts:6:18)"
+        const aRegexResult = re.exec(line)?? [];
+        const name = aRegexResult[1] || aRegexResult[2];
+
+        this.log_line(`=> ${name}`)
+        this.tabs += 1;
         code();
+        this.tabs -= 1;
+        this.log_line(`<= ${name}`)
     }
 
     variable(name: string, value: any, showTypes: boolean) {
@@ -34,10 +47,14 @@ export class LoggingInstance {
             toType = (value, spacing = " ") => `${spacing}${printType(value)}`
         }
 
-        this.log_line(`variable: ${name}${toType(value, '')}.length = ${value.length}`)
-        // with self.indent():
-        // for (i, v) in enumerate(value):
-        // self.logger(f"{self.get_tabs()}{name}[{i}] = {v}{to_type(v)}\n")
+        if (Array.isArray(value)) {
+            this.log_line(`variable: ${name}${toType(value, '')}.length = ${value.length}`)
+            this.tabs += 1;
+            value.forEach((v, i) => {
+                this.logger(`${this.getTabs()}${name}[${i}] = ${v}${toType(v)}\n`);
+            });
+            this.tabs -= 1;
+        }
     }
 
     private log_line(text: string) {

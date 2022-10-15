@@ -2,14 +2,18 @@ import { describe, expect, test } from "@jest/globals";
 import {verify, verifyAsJson} from "../JestApprovals";
 import {SimpleLogger} from "./SimpleLogger";
 
+function logVariables() {
+    SimpleLogger.use_markers(() => {
+        const names = ["Jacqueline", "Llewellyn"]
+        SimpleLogger.variable("names", names, true)
+        SimpleLogger.variable("names", names, false)
+    });
+}
+
 describe("SimpleLogger", () => {
     test("variable with list", () => {
         const output = SimpleLogger.log_to_string()
-        SimpleLogger.use_markers( () => {
-            const names = ["Jacqueline", "Llewellyn"]
-            SimpleLogger.variable("names", names, true)
-            SimpleLogger.variable("names", names, false)
-        });
+        logVariables();
         verify(output)
     });
 
