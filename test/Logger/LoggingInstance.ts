@@ -1,5 +1,23 @@
 import {StringWrapper} from "./StringWrapper";
 
+
+class Toggles {
+    public queries: boolean;
+    public messages: boolean;
+    public variables: boolean;
+    public hour_glass: boolean;
+    public events: boolean;
+    public markers: boolean;
+    constructor(show: boolean) {
+        this.queries = show;
+        this.messages = show;
+        this.variables = show;
+        this.hour_glass = show;
+        this.markers = show;
+        this.events = show;
+    }
+}
+
 function printType(value) {
     return `<${value.constructor.name}>`;
 }
@@ -19,6 +37,7 @@ export class LoggingInstance {
     logger: (string) => void;
     private counter: number = 0;
     private tabs: number = 0;
+    private toggles = new Toggles(true);
 
     constructor() {
         this.logger = console.log;
@@ -34,6 +53,9 @@ export class LoggingInstance {
     }
 
     use_markers(additional_stack: number = 0, code: () => void) {
+        if (!this.toggles.markers){
+            return;
+        }
         const name = getCallingMethod(additional_stack + 1);
 
         this.log_line(`=> ${name}`)
@@ -42,8 +64,10 @@ export class LoggingInstance {
     }
 
     variable(name: string, value: any, showTypes: boolean) {
-        // if not this.toggles.variables:
-        // return
+        if (!this.toggles.variables){
+            return;
+        }
+
         let toType = (v, s = "") => ''
         if (showTypes) {
             toType = (value, spacing = " ") => `${spacing}${printType(value)}`
@@ -86,8 +110,9 @@ export class LoggingInstance {
     }
 
     hour_glass() {
-        // if not this.toggles.hour_glass:
-        // return
+        if (!this.toggles.hour_glass){
+            return;
+        }
 
         this.counter += 1;
         if (this.counter == 1) {
@@ -106,5 +131,52 @@ export class LoggingInstance {
     }
 
 
+    show_all(show: boolean) {
+        this.toggles = new Toggles(show);
+    }
+
+    event(event_name: string) {
+        if (!this.toggles.events){
+            return;
+        }
+        this.log_line(`event: ${event_name}`)
+    }
+
+    show_queries(show) {
+        this.toggles.queries = show
+    }
+    show_markers(show) {
+        this.toggles.markers = show
+    }
+    show_events(show) {
+        this.toggles.events = show
+    }
+    show_messages(show) {
+        this.toggles.messages = show
+    }
+    show_variables(show) {
+        this.toggles.variables = show
+    }
+    show_hour_glass(show) {
+        this.toggles.hour_glass = show
+    }
+
+    warning(exception) {
+
+    }
+
+    query(queryText: string) {
+        if (!this.toggles.queries){
+            return;
+        }
+        this.log_line(`Sql: ${queryText}`)
+    }
+
+    message(messageText: string) {
+        if (!this.toggles.messages){
+            return;
+        }
+        this.log_line(`message: ${messageText}`)
+    }
 }
  

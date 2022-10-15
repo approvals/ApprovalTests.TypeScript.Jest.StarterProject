@@ -1,0 +1,37 @@
+event: Toggle Off None
+=> log_everything
+  Sql: Select * from people
+  variable: Nonsense = foo
+  event: Testing
+  message: Something random
+  .........1...
+<= log_everything
+event: Toggle Off ${toggle_name}
+event: Toggle Off ${toggle_name}
+=> log_everything
+  variable: Nonsense = foo
+  event: Testing
+  .........1...
+<= log_everything
+event: Toggle Off ${toggle_name}
+=> log_everything
+  variable: Nonsense = foo
+  event: Testing
+  .........1...
+<= log_everything
+event: Toggle Off ${toggle_name}
+=> log_everything
+  event: Testing
+  .........1...
+<= log_everything
+event: Toggle Off ${toggle_name}
+=> log_everything
+  variable: Nonsense = foo
+  event: Testing
+<= log_everything
+event: Toggle Off ${toggle_name}
+event: Toggle Off ${toggle_name}
+=> log_everything
+  variable: Nonsense = foo
+  .........1...
+<= log_everything

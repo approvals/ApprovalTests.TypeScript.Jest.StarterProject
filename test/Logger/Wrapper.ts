@@ -1,6 +1,7 @@
 
 export abstract class Wrapper<Type> {
-    abstract get():Type
+    abstract get(): Type
+
 }
 
 

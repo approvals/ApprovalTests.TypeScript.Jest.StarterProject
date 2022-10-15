@@ -53,7 +53,57 @@ describe("SimpleLogger", () => {
     });
     // end-snippet
 
-    
+    // begin-snippet: verify_simple_logger_long_example
+    test("test_variable_explict", () => {
+        const output = SimpleLogger.log_to_string()
+        SimpleLogger.variable("dalmatians", 101, true)
+        SimpleLogger.variable("dalmatians", 101, false)
+        verify(output)
+    });
+
+    // end-snippet
+
+
+    function verify_toggle(toggle_name, toggle) {
+        SimpleLogger.show_all(true)
+        SimpleLogger.event(`Toggle Off ${toggle_name}`)
+        toggle(false)
+        log_everything()
+    }
+
+    function log_everything(): void {
+        SimpleLogger.use_markers(() => {
+
+            SimpleLogger.query("Select * from people")
+            SimpleLogger.variable("Nonsense", "foo")
+            SimpleLogger.event("Testing")
+            SimpleLogger.message("Something random")
+            for (let i = 0; i < 13; i++) {
+                SimpleLogger.hour_glass()
+
+            }
+            try {
+                const infinity = 1 / 0
+            } catch (e) {
+                SimpleLogger.warning(e)
+            }
+
+        });
+    }
+
+    verifySimpleLogger("switching", () => {
+        verify_toggle("None", a => SimpleLogger.show_all(true));
+        // verify_toggle("All", a => SimpleLogger.show_all(a));
+        // verify_toggle("Query", a => SimpleLogger.show_queries(a));
+        // verify_toggle("Message", a => SimpleLogger.show_messages(a));
+        // verify_toggle("Variable", a => SimpleLogger.show_variables(a));
+        // verify_toggle("Hour Glass", a => SimpleLogger.show_hour_glass(a));
+        // verify_toggle("Markers", a => SimpleLogger.show_markers(a));
+        // verify_toggle("Events", a => SimpleLogger.show_events(a));
+
+    });
+
+
 });
 
 /*
@@ -108,54 +158,11 @@ def test_timestamps():
 
 
 
-# begin-snippet: verify_simple_logger_long_example
-def test_variable_explict():
-    output = SimpleLogger.log_to_string()
-    SimpleLogger.variable("dalmatians", 101, show_types=True)
-    SimpleLogger.variable("dalmatians", 101, show_types=False)
-    verify(output)
-
-
-# end-snippet
 
 
 
 
 
-def verify_toggle(toggle_name, toggle):
-    SimpleLogger.show_all(True)
-    SimpleLogger.event(f"Toggle Off {toggle_name}")
-    toggle(False)
-    log_everything()
-
-
-def test_switching() -> None:
-    output = SimpleLogger.log_to_string()
-
-    verify_toggle("None", lambda a: SimpleLogger.show_all(True)),
-    verify_toggle("All", SimpleLogger.show_all),
-    verify_toggle("Query", SimpleLogger.show_queries),
-    verify_toggle("Message", SimpleLogger.show_messages),
-    verify_toggle("Variable", SimpleLogger.show_variables),
-    verify_toggle("Hour Glass", SimpleLogger.show_hour_glass),
-    verify_toggle("Markers", SimpleLogger.show_markers),
-    verify_toggle("Events", SimpleLogger.show_events),
-
-    verify(output)
-
-
-def log_everything() -> None:
-    with SimpleLogger.use_markers():
-        SimpleLogger.query("Select * from people")
-        SimpleLogger.variable("Nonsense", "foo")
-        SimpleLogger.event("Testing")
-        SimpleLogger.message("Something random")
-        for a in range(1, 13):
-            SimpleLogger.hour_glass()
-        try:
-            infinity = 1 / 0
-        except Exception as e:
-            SimpleLogger.warning(exception=e)
 
 
 def function_to_run(color, number) -> None:
