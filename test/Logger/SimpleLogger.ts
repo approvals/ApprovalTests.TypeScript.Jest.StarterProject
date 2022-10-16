@@ -49,8 +49,8 @@ export class SimpleLogger {
 
     }
 
-    static use_markers(code: () => void): void {
-        this._wrapper.get().use_markers(1, code);
+    static use_markers(code: () => void, parameters: (string | (() => string)) = ""): void {
+        this._wrapper.get().use_markers(1, code, parameters);
     }
 
     static variable(name: string, value: any, show_types: boolean = false) {

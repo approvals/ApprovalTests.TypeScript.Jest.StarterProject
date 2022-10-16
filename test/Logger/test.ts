@@ -103,7 +103,75 @@ describe("SimpleLogger", () => {
 
     });
 
+    // begin-snippet: method_with_inputs_and_outputs
+    function method_with_inputs_and_outputs(number, announcement) {
+        SimpleLogger.use_markers(() => {
 
+                // end-snippet
+                for (number = number; 0 <= number; number--) {
+                    console.log(number)
+                }
+                console.log(announcement)
+            },
+            () => `number = ${number}, announcement = ${announcement}`);
+    }
+
+    verifySimpleLogger("test_markers_with_signature_in_and_out", () => {
+        method_with_inputs_and_outputs(10, "Blast off");
+    })
+
+    // begin-snippet: method_with_inputs
+    function method_with_inputs(number, name) {
+        SimpleLogger.use_markers(() => {
+            console.log(`${number}) ${name}`)
+        }, `number = ${number}, name = ${name}`);
+    }
+
+    // end-snippet
+
+    verifySimpleLogger("test_markers_with_signature", () => {
+        method_with_inputs(1, "Susan");
+    })
+
+    test("race_condition", () => {
+
+        let whose_turn = 0
+
+        function wait_for(number) {
+            while (whose_turn < number) {
+            }
+            whose_turn += 1
+        }
+
+        let log1;
+
+        function thread_1() {
+            wait_for(0);
+            log1 = SimpleLogger.log_to_string(true)
+            wait_for(2);
+            SimpleLogger.event("event_a")
+            wait_for(4);
+            SimpleLogger.event("event_b")
+        }
+
+        let log2;
+
+        function thread_2() {
+            wait_for(1);
+            log2 = SimpleLogger.log_to_string(true)
+            wait_for(3);
+            SimpleLogger.event("event_a")
+            wait_for(5);
+            SimpleLogger.event("event_b")
+        }
+
+        // threading.Thread(target = thread_1).start()
+        // threading.Thread(target = thread_2).start()
+
+        //wait_for(6);
+        //expect(`${log1}`).toBe(`${log2}`);
+
+    });
 });
 
 /*
@@ -197,28 +265,8 @@ def test_verify_logging_for_all_combinations() -> None:
     )
 
 
-# begin-snippet: method_with_inputs
-def method_with_inputs(number, name):
-    with SimpleLogger.use_markers(f"number = {number}, name = {name}"):
-        # end-snippet
-        print(f"{number}) {name}")
 
 
-def test_markers_with_signature() -> None:
-    output = SimpleLogger.log_to_string()
-    method_with_inputs(1, "Susan")
-    verify(output)
-
-
-# begin-snippet: method_with_inputs_and_outputs
-def method_with_inputs_and_outputs(number, announcement):
-    with SimpleLogger.use_markers(
-        lambda: f"number = {number}, announcement = {announcement}"
-    ):
-        # end-snippet
-        for number in range(number, 0, -1):
-            print(number)
-        print(announcement)
 
 
 def test_markers_with_signature_in_and_out() -> None:
@@ -227,43 +275,6 @@ def test_markers_with_signature_in_and_out() -> None:
     verify(output)
 
 
-def test_race_condition() -> None:
-    whose_turn = 0
 
-    @contextmanager
-    def wait_for(number):
-        nonlocal whose_turn
-        while whose_turn < number:
-            pass
-        yield
-        whose_turn += 1
-
-    log1 = "Log1"
-
-    def thread_1():
-        nonlocal log1
-        with wait_for(0):
-            log1 = SimpleLogger.log_to_string(True)
-        with wait_for(2):
-            SimpleLogger.event("event_a")
-        with wait_for(4):
-            SimpleLogger.event("event_b")
-
-    log2 = "Log2"
-
-    def thread_2():
-        nonlocal log2
-        with wait_for(1):
-            log2 = SimpleLogger.log_to_string(True)
-        with wait_for(3):
-            SimpleLogger.event("event_a")
-        with wait_for(5):
-            SimpleLogger.event("event_b")
-
-    threading.Thread(target=thread_1).start()
-    threading.Thread(target=thread_2).start()
-
-    with wait_for(6):
-        assert f"'{log1}'" == f"'{log2}'"
 
  */

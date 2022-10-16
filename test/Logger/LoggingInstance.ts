@@ -55,16 +55,28 @@ export class LoggingInstance {
         return stringWrapper;
     }
 
-    use_markers(additional_stack: number = 0, code: () => void) {
+    use_markers(additional_stack: number, code: () => void, parameters: string | (() => string) ="" ) {
         if (!this.toggles.markers) {
             code();
             return;
         }
         const name = getCallingMethod(additional_stack + 1);
-
-        this.log_line(`=> ${name}`)
+        let parameterText = "";
+        if (typeof parameters === 'function'){
+            parameterText = parameters();
+        }
+        else {
+            parameterText = parameters;
+        }
+        this.log_line(`=> ${name}(${parameterText})`)
         this.withTabbing(code)
-        this.log_line(`<= ${name}`)
+        if (typeof parameters === 'function'){
+            parameterText = parameters();
+        }
+        else {
+            parameterText = ""
+        }
+        this.log_line(`<= ${name}(${parameterText})`)
     }
 
     variable(name: string, value: any, showTypes: boolean) {
