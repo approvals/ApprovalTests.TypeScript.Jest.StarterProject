@@ -40,11 +40,8 @@ export class SimpleLogger {
         this._wrapper.get().logger = log_method
     }
 
-    static log_to_string(log_separate_threads: boolean = true): StringWrapper {
-        //with threading.Lock():
-        if (log_separate_threads && this._wrapper instanceof SingleWrapper) (
-            this._wrapper = new ThreadedWrapper(() => new LoggingInstance())
-        )
+    static log_to_string(): StringWrapper {
+        this._wrapper = new SingleWrapper(new LoggingInstance());
         return SimpleLogger._wrapper.get().log_to_string()
 
     }
@@ -83,5 +80,9 @@ export class SimpleLogger {
     static warning(exception) {
         this._wrapper.get().warning(exception)
 
+    }
+
+    static show_timestamps(show: boolean) {
+        this._wrapper.get().show_timestamps(show);
     }
 }

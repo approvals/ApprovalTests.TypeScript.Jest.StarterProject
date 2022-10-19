@@ -41,9 +41,12 @@ export class LoggingInstance {
     private toggles = new Toggles(true);
     private log_stack_traces: boolean = true;
     private log_with_timestamps: boolean = true;
+    public timer: () => Date;
+    private previous_timestamp: Date | null = null;
 
     constructor() {
         this.logger = console.log;
+        this.timer = () => new Date();
     }
 
     log_to_string(): StringWrapper {
@@ -107,15 +110,14 @@ export class LoggingInstance {
             this.logger("\n")
         }
         this.counter = 0
-        //timestamp = this.get_timestamp() if use_timestamps else ""
-        const timestamp = "";
+        const timestamp = use_timestamps ? this.get_timestamp() : "";
         const output_message = `${timestamp}${this.getTabs()}${text}\n`
         this.logger(output_message)
 
     }
 
     private getTabs() {
-        return "                                                ".substring(0, 2 * this.tabs);
+        return "  ".repeat(this.tabs);
     }
 
     private withTabbing(code: () => void) {
@@ -220,6 +222,29 @@ export class LoggingInstance {
             return;
         }
         this.log_line(`message: ${messageText}`)
+    }
+
+    show_timestamps(show: boolean) {
+        this.log_with_timestamps = show;
+
+    }
+
+    private get_timestamp() {
+        if (! this.log_with_timestamps){
+            return "";
+        }
+
+        const time1 = this.timer();
+        const time = time1.toISOString();
+        let diff_millseconds = 0;
+        if (this.previous_timestamp != null){
+            diff_millseconds= time1.getTime() - this.previous_timestamp.getTime();
+        }
+        const diff_display = `~${String(diff_millseconds).padStart(6,"0")}ms`
+        let time_text = `${time}`.replace("T", " ").substring(0, 19);
+        const timestamp = `[${time_text} ${diff_display}] `
+        this.previous_timestamp = time1
+        return timestamp
     }
 }
  

@@ -14,9 +14,10 @@ function verifySimpleLogger(testName: string, code: () => void) {
     test(testName, () => {
         const output = SimpleLogger.log_to_string()
         code();
-        verify(output)
+        verify(output);
     });
 }
+
 
 describe("SimpleLogger", () => {
     test("variable with list", () => {
@@ -133,44 +134,28 @@ describe("SimpleLogger", () => {
         method_with_inputs(1, "Susan");
     })
 
-    test("race_condition", () => {
+    verifySimpleLogger("test_timestamps", () => {
+        let count = -1;
 
-        let whose_turn = 0
-
-        function wait_for(number) {
-            while (whose_turn < number) {
-            }
-            whose_turn += 1
+        function create_applesauce_timer(): Date {
+            const dates = [
+                new Date(0),
+                new Date(500),
+                new Date(2000),
+                new Date(1050000),
+                new Date(1052000),
+            ]
+            count++;
+            return dates[count] ?? new Date();
         }
 
-        let log1;
-
-        function thread_1() {
-            wait_for(0);
-            log1 = SimpleLogger.log_to_string(true)
-            wait_for(2);
-            SimpleLogger.event("event_a")
-            wait_for(4);
-            SimpleLogger.event("event_b")
-        }
-
-        let log2;
-
-        function thread_2() {
-            wait_for(1);
-            log2 = SimpleLogger.log_to_string(true)
-            wait_for(3);
-            SimpleLogger.event("event_a")
-            wait_for(5);
-            SimpleLogger.event("event_b")
-        }
-
-        // threading.Thread(target = thread_1).start()
-        // threading.Thread(target = thread_2).start()
-
-        //wait_for(6);
-        //expect(`${log1}`).toBe(`${log2}`);
-
+        SimpleLogger._wrapper.get().timer = () => create_applesauce_timer();
+        SimpleLogger.show_timestamps(true)
+        SimpleLogger.event("1")
+        SimpleLogger.event("2")
+        SimpleLogger.event("3")
+        SimpleLogger.event("4")
+        SimpleLogger.warning(new Error("Oh no you didn't!"))
     });
 });
 
@@ -198,30 +183,7 @@ def test_warnings():
 
 
 
-def test_timestamps():
-    with use_utc_timezone():
-        with verify_simple_logger():
-            count = -1
 
-            def create_applesauce_timer():
-                dates = [
-                    datetime.datetime.fromtimestamp(0.0),
-                    datetime.datetime.fromtimestamp(0.5),
-                    datetime.datetime.fromtimestamp(2.0),
-                    datetime.datetime.fromtimestamp(1050),
-                    datetime.datetime.fromtimestamp(1052),
-                ]
-                nonlocal count
-                count = count + 1
-                return dates[count]
-
-            SimpleLogger._wrapper.get().timer = create_applesauce_timer
-            SimpleLogger.show_timestamps(True)
-            SimpleLogger.event("1")
-            SimpleLogger.event("2")
-            SimpleLogger.event("3")
-            SimpleLogger.event("4")
-            SimpleLogger.warning(exception=Exception("Oh no you didn't!"))
 
 
 
