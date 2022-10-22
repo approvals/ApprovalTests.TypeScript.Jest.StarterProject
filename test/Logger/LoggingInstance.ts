@@ -39,7 +39,7 @@ export class LoggingInstance {
     private counter: number = 0;
     private tabs: number = 0;
     private toggles = new Toggles(true);
-    private log_stack_traces: boolean = true;
+    public log_stack_traces: boolean = true;
     private log_with_timestamps: boolean = true;
     public timer: () => Date;
     private previous_timestamp: Date | null = null;
@@ -197,10 +197,8 @@ export class LoggingInstance {
         if (exception) {
             let stack_trace = "";
             if (this.log_stack_traces) {
-                // format_exception = traceback.format_exception(
-                //     None, exception, exception.__traceback__
-                // )
-                // stack_trace = "".join(format_exception)
+                // todo: grab stack trace
+                stack_trace = exception.toString()
 
             } else {
                 stack_trace = `${exception}`;

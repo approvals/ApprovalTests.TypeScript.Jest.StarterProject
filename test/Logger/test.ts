@@ -1,6 +1,7 @@
 import {describe, expect, test} from "@jest/globals";
 import {verify, verifyAsJson} from "../JestApprovals";
 import {SimpleLogger} from "./SimpleLogger";
+import {Options} from "../Options";
 
 function logVariables() {
     SimpleLogger.use_markers(() => {
@@ -10,11 +11,11 @@ function logVariables() {
     });
 }
 
-function verifySimpleLogger(testName: string, code: () => void) {
+function verifySimpleLogger(testName: string, code: () => void, options?: Options) {
     test(testName, () => {
         const output = SimpleLogger.log_to_string()
         code();
-        verify(output);
+        verify(output, options);
     });
 }
 
@@ -41,7 +42,6 @@ describe("SimpleLogger", () => {
         });
 
     }
-
 
     verifySimpleLogger("test_standard_logger", () => {
         log_from_inner_method()
@@ -157,27 +157,32 @@ describe("SimpleLogger", () => {
         SimpleLogger.event("4")
         SimpleLogger.warning(new Error("Oh no you didn't!"))
     });
+
+    verifySimpleLogger("test_warnings",
+        () => {
+
+
+            function scrubber(text: string): string {
+                return text.replace("", "test_simple_logger.py")
+            }
+
+            SimpleLogger._wrapper.get().log_stack_traces = true;
+            const text = "EVERYTHING IS AWFUL!!!!!!"
+            let exception: any;
+            try {
+                throw new Error("EVERYTHING IS exceptionally AWFUL!!!!!!");
+            } catch (e) {
+                exception = e;
+            }
+            //SimpleLogger.warning(text)
+            SimpleLogger.warning(exception)
+        });
 });
 
 /*
 
 
 
-def test_warnings():
-    def scrubber(text: str) -> str:
-        return text.replace(__file__, "test_simple_logger.py")
-
-    output = SimpleLogger.log_to_string()
-    SimpleLogger._wrapper.get().log_stack_traces = True
-    text = "EVERYTHING IS AWFUL!!!!!!"
-    try:
-        raise Exception("EVERYTHING IS exceptionally AWFUL!!!!!!")
-    except Exception as e:
-        exception = e
-    SimpleLogger.warning(text)
-    SimpleLogger.warning(exception)
-    SimpleLogger.warning(text, exception)
-    verify(output, options=Options().with_scrubber(scrubber))
 
 
 
