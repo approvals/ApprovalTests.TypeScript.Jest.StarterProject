@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import {  verifyAsJson } from "./JestApprovals";
+import {verifyAsJson} from "approvals/lib/Providers/Jest/JestApprovals";
 
 describe("ApprovalTests", () => {
    test("SimpleVerify", () => {

@@ -1,8 +1,7 @@
 import {describe, expect, test} from "@jest/globals";
-import {verify, verifyAsJson} from "../JestApprovals";
-import {SimpleLogger} from "./SimpleLogger";
-import {Options} from "../Options";
-
+import {SimpleLogger} from "approvals/lib/Utilities/Logger/SimpleLogger";
+import {Options} from "approvals/lib/Core/Options";
+import {verify} from "approvals/lib/Providers/Jest/JestApprovals";
 function logVariables() {
     SimpleLogger.use_markers(() => {
         const names = ["Jacqueline", "Llewellyn"]
@@ -86,7 +85,7 @@ describe("SimpleLogger", () => {
             try {
                 throw new Error("Bad stuff happened here")
             } catch (e) {
-                SimpleLogger.warning(e)
+                SimpleLogger.warning(e as Error)
             }
 
         });
