@@ -1,7 +1,8 @@
 import { beforeAll, describe, expect, test } from "@jest/globals";
-import { configure } from "approvals";
-import { JestReporter } from "approvals/lib/Providers/Jest/JestReporter";
+
 import {verify, verifyAsJson} from "approvals/lib/Providers/Jest/JestApprovals";
+import {configure} from "approvals/lib/config";
+import {JestReporter} from "approvals/lib/Providers/Jest/JestReporter";
 
 
 describe("ApprovalTests", () => {
