@@ -23,6 +23,7 @@ jobs:
           node-version: 20
       - run: |
           ./run_tests.sh
+        shell: bash
   auto-merge:
     needs: build
     runs-on: ubuntu-latest
