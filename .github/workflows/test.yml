@@ -16,3 +16,19 @@ jobs:
           node-version: 20
       - run: |
           ./run_tests.sh
+  auto-merge:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+      - name: auto-merge
+        if: |
+          github.actor == 'dependabot[bot]' &&
+          github.event_name == 'pull_request'
+        run: |
+          gh pr merge --auto --rebase "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          # this secret needs to be in the settings.secrets.dependabot
+          GITHUB_TOKEN: ${{secrets.GH_ACTION_TOKEN}}
