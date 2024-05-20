@@ -14,7 +14,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.12.12",
-    "approvals": "^6.2.1",
+    "approvals": "^7.1.0",
     "jest": "^29.1.2",
     "prettier": "^3.2.5",
     "ts-jest": "^29.0.3",
