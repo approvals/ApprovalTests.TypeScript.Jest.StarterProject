@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^24.0.2",
+    "@types/node": "^24.0.3",
     "approvals": "^7.3.0",
     "jest": "^30.0.0",
     "prettier": "^3.5.3",
