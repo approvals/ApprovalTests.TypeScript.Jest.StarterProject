@@ -16,7 +16,7 @@
     "@types/node": "^25.9.2",
     "approvals": "^7.3.0",
     "jest": "^30.4.2",
-    "prettier": "^3.8.3",
+    "prettier": "^3.8.4",
     "ts-jest": "^29.4.11",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
